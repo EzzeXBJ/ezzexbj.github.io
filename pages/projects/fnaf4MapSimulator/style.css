@@ -1,0 +1,45 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+body {
+  padding: 10px;
+}
+main {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+#sceneMap {
+  border: 2px solid #000;
+  grid-column: 1;
+}
+p {
+  grid-column: 2;
+  background: red;
+  padding: 10px;
+  overflow: hidden;
+}
+li {
+  margin-left: 10px;
+  list-style-type: none;
+}
+.btns {
+  display: flex;
+  padding: 10px;
+  column-gap: 10px;
+}
+button {
+  width: 100px;
+  height: 50px;
+  font-size: 150%;
+  font-weight: bold;
+  transition: .1s;
+}
+button:active {
+  background: grey;
+}
+#sceneGame {
+  border: 2px solid black;
+  display: block;
+  width: 100%;
+}
