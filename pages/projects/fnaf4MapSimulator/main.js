@@ -9,7 +9,7 @@ function random(min, max) {
 
 const FPS = 100;
 let vel = 1;
-const tileSize = 100, rows = 3, cols = 3;
+const tileSize = window.width*.75, rows = 3, cols = 3;
 canvas.width = tileSize * cols + 20;
 canvas.height = tileSize * rows + 20;
 let pause = true;
