@@ -11,7 +11,7 @@ const FPS = 100;
 let vel = 1;
 
 const rows = 3, cols = 4;
-canvas.width = window.screen.width*.75;
+canvas.width = 330;
 const tileSize = (canvas.width-(10*(cols-1)))/cols;
 canvas.height = tileSize*rows +(10*(rows-1));
 
