@@ -9,15 +9,18 @@ function random(min, max) {
 
 const FPS = 100;
 let vel = 1;
-const tileSize = window.width*.75, rows = 3, cols = 3;
-canvas.width = tileSize * cols + 20;
-canvas.height = tileSize * rows + 20;
+
+const rows = 3, cols = 4;
+canvas.width = window.screen.width*.75;
+const tileSize = (canvas.width-(10*(cols-1)))/cols;
+canvas.height = tileSize*rows +(10*(rows-1));
+
 let pause = true;
 let frame = 0;
 const mapData = [
-    [1,1,1],
-    [1,1,1],
-    [0,1,0]
+    [1,1,1,1],
+    [1,1,1,0],
+    [0,1,0,0]
 ];
 const foxy = {
     size: tileSize/3,
