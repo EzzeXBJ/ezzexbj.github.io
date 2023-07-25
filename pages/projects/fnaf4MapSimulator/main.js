@@ -9,19 +9,24 @@ function random(min, max) {
 
 const FPS = 100;
 let vel = 1;
-
-const rows = 3, cols = 4;
-canvas.width = 330;
-const tileSize = (canvas.width-(10*(cols-1)))/cols;
-canvas.height = tileSize*rows +(10*(rows-1));
-
-let pause = true;
-let frame = 0;
 const mapData = [
     [1,1,1,1],
     [1,1,1,0],
     [0,1,0,0]
 ];
+const rows = mapData.length, cols = mapData[0].length;
+let tileSize;
+if (window.screen.width <= window.screen.height) {
+  canvas.width = window.screen.width*.75;
+  tileSize = (canvas.width-(10*(cols-1)))/cols;
+  canvas.height = tileSize*rows+(10*(rows-1));
+} else {
+  canvas.height = window.screen.height*.75;
+  tileSize = (canvas.height-(10*(rows-1)))/rows;
+  canvas.width = tileSize * cols + (10 * (cols - 1));
+}
+let pause = true;
+let frame = 0;
 const foxy = {
     size: tileSize/3,
     position: 1,
