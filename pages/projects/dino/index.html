@@ -4,373 +4,149 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dinosaurio Chrome V2</title>
+    <title></title>
     <style>
-
-* {
-    padding: 0;
-    margin: 0;
-}
-
-body{
-    height: 100vh;
-    background: #584040;
-    display: flex;
-    align-items: center;
-}
-
-.contenedor {
-    width: 920px;
-    height: 280px;
-    margin: 0 auto;
-    
-    position: relative;
-
-    background: linear-gradient(#b7d6c7, transparent) #ffe2d1;/*linear-gradient(#90ebff, white);*/
-    transition: background-color 1s linear;
-    overflow: hidden;
-}
-
-.mediodia {
-    background-color: #ffdcf3;
-}
-
-.tarde {
-    background-color: #ffadad;
-}
-
-.noche {
-    background-color: #aca8c7;
-}
-
-.dino {
-    width: 84px;
-    height: 84px;
-
-    position: absolute;
-    bottom: 22px;
-    left: 42px;
-    z-index: 2;
-    background: #11d;
-   }
-
-.suelo {
-    width: 100%;
-    height: 42px;
-
-    position: absolute;
-    bottom: 0;
-    left: 0;
-
-    background: #f55;
-}
-
-.cactus{
-    width: 46px;
-    height: 96px;
-
-    position: absolute;
-    bottom: 16px;
-    left: 600px;
-    z-index: 1;
-
-    
-    background: #8d8;
-}
-
-.nube{
-    width: 92px;
-    height: 26px;
-
-    position: absolute;
-    z-index: 0;
-
-    background: #ddd;
-    
-}
-
-.score{
-    width: 100px;
-    height: 30px;
-
-    position: absolute;
-    top: 5px;
-    right: 15px;
-    z-index: 10;
-
-    color: #d48871;
-    font-family: Verdana;
-    font-size: 30px;
-    font-weight: bold;
-    text-align: right;
-}
-
-.game-over{
-    display: none;
-
-    position: absolute;
-    width: 100%;
-
-
-    text-align: center;
-    color: #7e928b;
-    font-size: 30px;
-    font-family: Verdana;
-    font-weight: 700;
-}
-
-
-
-
+      * {
+        padding:0;
+        margin: 0;
+        box-sizing: content-box;
+      }
+      canvas {
+        border: 2px solid #333;
+      }
+      button {
+        width: 100px;
+        height: 40px;
+      }
     </style>
 </head>
 <body>
-
-    <div class="contenedor">
-
-        <div class="suelo"></div>
-        
-        <div class="dino"></div>
-
-        <div class="score">0</div>
-
-    </div>
-
-    <div class="game-over">GAME OVER</div>
-    <button onclick='Saltar()'>Jump</button>
-<script>
-
-//****** GAME LOOP ********//
-
-var time = new Date();
-var deltaTime = 0;
-
-if(document.readyState === "complete" || document.readyState === "interactive"){
-    setTimeout(Init, 1);
-}else{
-    document.addEventListener("DOMContentLoaded", Init); 
-}
-
-function Init() {
-    time = new Date();
-    Start();
-    Loop();
-}
-
-function Loop() {
-    deltaTime = (new Date() - time) / 1000;
-    time = new Date();
-    Update();
-    requestAnimationFrame(Loop);
-}
-
-//****** GAME LOGIC ********//
-
-var sueloY = 22;
-var velY = 0;
-var impulso = 900;
-var gravedad = 2500;
-
-var dinoPosX = 42;
-var dinoPosY = sueloY; 
-
-var sueloX = 0;
-var velEscenario = 1280/3;
-var gameVel = 1;
-var score = 0;
-
-var parado = false;
-var saltando = false;
-
-var tiempoHastaObstaculo = 2;
-var tiempoObstaculoMin = 0.7;
-var tiempoObstaculoMax = 1.8;
-var obstaculoPosY = 16;
-var obstaculos = [];
-
-var tiempoHastaNube = 0.5;
-var tiempoNubeMin = 0.7;
-var tiempoNubeMax = 2.7;
-var maxNubeY = 270;
-var minNubeY = 100;
-var nubes = [];
-var velNube = 0.5;
-
-var contenedor;
-var dino;
-var textoScore;
-var suelo;
-var gameOver;
-
-function Start() {
-    gameOver = document.querySelector(".game-over");
-    suelo = document.querySelector(".suelo");
-    contenedor = document.querySelector(".contenedor");
-    textoScore = document.querySelector(".score");
-    dino = document.querySelector(".dino");
-    document.addEventListener("keydown", HandleKeyDown);
-}
-
-function Update() {
-    if(parado) return;
-    
-    MoverDinosaurio();
-    
-    DecidirCrearObstaculos();
-    DecidirCrearNubes();
-    MoverObstaculos();
-    MoverNubes();
-    DetectarColision();
-
-    velY -= gravedad * deltaTime;
-}
-
-function HandleKeyDown(ev){
-    if(ev.keyCode == 32){
-        Saltar();
+  <canvas id="canvas"></canvas>
+  <button id="jump">Jump</button>
+  
+  
+  <script>
+    class Canvas {
+  constructor (canvas,width,height) {
+    this.canvas = canvas
+    this.ctx = this.canvas.getContext('2d')
+    this.width = width
+    this.height = height
+    this.canvas.width = this.width
+    this.canvas.height = this.height
+  }
+  set setWidth (width) {
+    this.width = width
+    this.canvas.width = this.width
+  }
+  set setHeight (height) {
+    this.height = height
+    this.canvas.height = this.height
+  }
+  get getSize () {
+    return {
+      width: this.width,
+      height: this.height
     }
+  }
+  clear () {
+    this.ctx.clearRect(0,0,this.width,this.height)
+  }
+  drawRect(x,y,w,h,color='#333') {
+    this.ctx.fillStyle = color
+    this.ctx.fillRect(x,y,w,h)
+  }
 }
-
-function Saltar(){
-    if(dinoPosY === sueloY){
-        saltando = true;
-        velY = impulso;
-        
+class Player {
+  constructor(x, y, w, h) {
+    this.position = {
+      x: x,
+      y: y
     }
-}
-
-function MoverDinosaurio() {
-    dinoPosY += velY * deltaTime;
-    if(dinoPosY < sueloY){
-        
-        TocarSuelo();
+    this.size = {
+      w: w,
+      h: h
     }
-    dino.style.bottom = dinoPosY+"px";
-}
-
-function TocarSuelo() {
-    dinoPosY = sueloY;
-    velY = 0;
-    
-    saltando = false;
-}
-
-
-
-
-
-
-
-function DecidirCrearObstaculos() {
-    tiempoHastaObstaculo -= deltaTime;
-    if(tiempoHastaObstaculo <= 0) {
-        CrearObstaculo();
+    this.bottom = this.position.y+this.size.h
+    this.speed = 0
+  }
+  draw(canvas) {
+    canvas.drawRect(this.position.x, this.position.y, this.size.w, this.size.h, '#11d')
+  }
+  jump (ground) {
+    console.log(1)
+    if (this.bottom == ground.position.y) {
+      this.speed = 500
     }
+  }
+  update (deltaTime,ground, gravity) {
+    this.position.y -= this.speed * deltaTime
+    if (this.bottom > ground.position.y) {
+      this.position.y = ground.position.y - this.size.h
+      this.speed = 0
+    } else this.speed -= gravity*deltaTime
+  }if 
 }
-
-function DecidirCrearNubes() {
-    tiempoHastaNube -= deltaTime;
-    if(tiempoHastaNube <= 0) {
-        CrearNube();
+class Ground {
+  constructor (x,y,w,h) {
+    this.position = {
+      x:x,
+      y:y
     }
-}
-
-function CrearObstaculo() {
-    var obstaculo = document.createElement("div");
-    contenedor.appendChild(obstaculo);
-    obstaculo.classList.add("cactus");
-    
-    obstaculo.posX = contenedor.clientWidth;
-    obstaculo.style.left = contenedor.clientWidth+"px";
-
-    obstaculos.push(obstaculo);
-    tiempoHastaObstaculo = tiempoObstaculoMin + Math.random() * (tiempoObstaculoMax-tiempoObstaculoMin) / gameVel;
-}
-
-function CrearNube() {
-    var nube = document.createElement("div");
-    contenedor.appendChild(nube);
-    nube.classList.add("nube");
-    nube.posX = contenedor.clientWidth;
-    nube.style.left = contenedor.clientWidth+"px";
-    nube.style.bottom = minNubeY + Math.random() * (maxNubeY-minNubeY)+"px";
-    
-    nubes.push(nube);
-    tiempoHastaNube = tiempoNubeMin + Math.random() * (tiempoNubeMax-tiempoNubeMin) / gameVel;
-}
-
-function MoverObstaculos() {
-    for (var i = obstaculos.length - 1; i >= 0; i--) {
-        if(obstaculos[i].posX < -obstaculos[i].clientWidth) {
-            obstaculos[i].parentNode.removeChild(obstaculos[i]);
-            obstaculos.splice(i, 1);
-            GanarPuntos();
-        }else{
-            obstaculos[i].posX -= CalcularDesplazamiento();
-            obstaculos[i].style.left = obstaculos[i].posX+"px";
-        }
+    this.size = {
+      w:w,
+      h:h
     }
+  }
+  draw(canvas) {
+    canvas.drawRect(this.position.x,this.position.y,this.size.w,this.size.h,'#f55')
+  }
 }
 
-function MoverNubes() {
-    for (var i = nubes.length - 1; i >= 0; i--) {
-        if(nubes[i].posX < -nubes[i].clientWidth) {
-            nubes[i].parentNode.removeChild(nubes[i]);
-            nubes.splice(i, 1);
-        }else{
-            nubes[i].posX -= CalcularDesplazamiento() * velNube;
-            nubes[i].style.left = nubes[i].posX+"px";
-        }
-    }
+var loadGame = false
+var time = 0
+var deltaTime = 0
+const gravity = 2500
+
+const width = maxWidth().w
+const height = maxWidth().h
+const canvas = new Canvas(document.getElementById('canvas'),width,height)
+
+const player = new Player(width*.1,height*.75-60,35,60)
+const obstacle = 0
+const ground = new Ground(0,height*.75,width,height*.25)
+
+//Game
+if (document.readyState === "complete" || document.readyState === "interactive") {
+  setTimeout(init, 1);
+} else {
+  document.addEventListener("DOMContentLoaded", init);
 }
 
-function GanarPuntos() {
-    score++;
-    textoScore.innerText = score;
-    if(score == 5){
-        gameVel = 1.5;
-        contenedor.classList.add("mediodia");
-    }else if(score == 10) {
-        gameVel = 2;
-        contenedor.classList.add("tarde");
-    } else if(score == 20) {
-        gameVel = 3;
-        contenedor.classList.add("noche");
-    }
-    suelo.style.animationDuration = (3/gameVel)+"s";
+function maxWidth () {
+  if (innerWidth < innerHeight) return {
+    w: innerWidth,
+    h: innerWidth*.6
+  }
+  else return {
+    w: innerWidth,
+    h: innerHeight
+  }
 }
-
-function GameOver() {
-    
-    gameOver.style.display = "block";
+function init () {
+  time = new Date()
+  document.getElementById('jump').addEventListener('click',()=>{player.jump(ground)})
+  update()
 }
-
-function DetectarColision() {
-    for (var i = 0; i < obstaculos.length; i++) {
-        if(obstaculos[i].posX > dinoPosX + dino.clientWidth) {
-            //EVADE
-            break; //al estar en orden, no puede chocar con más
-        }else{
-            if(IsCollision(dino, obstaculos[i], 10, 30, 15, 20)) {
-                GameOver();
-            }
-        }
-    }
+function update () {
+  player.update(deltaTime,ground,gravity)
+  canvas.clear()
+  ground.draw(canvas)
+  player.draw(canvas)
+  deltaTime = (new Date()-time)/1000
+  time = new Date()
+  requestAnimationFrame(update)
 }
-
-function IsCollision(a, b, paddingTop, paddingRight, paddingBottom, paddingLeft) {
-    var aRect = a.getBoundingClientRect();
-    var bRect = b.getBoundingClientRect();
-
-    return !(
-        ((aRect.top + aRect.height - paddingBottom) < (bRect.top)) ||
-        (aRect.top + paddingTop > (bRect.top + bRect.height)) ||
-        ((aRect.left + aRect.width - paddingRight) < bRect.left) ||
-        (aRect.left + paddingLeft > (bRect.left + bRect.width))
-    );
-}
-
-
-</script>
+  </script>
 </body>
 </html>
