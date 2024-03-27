@@ -9,7 +9,7 @@ function create (title,description,src) {
     desElement.textContent = description
     desElement.className = "description"
     const image = document.createElement("img")
-    image.src = src
+    image.href = src
     image.className = "image"
     element.appendChild(image)
     element.appendChild(titleElement)
