@@ -28,7 +28,7 @@ function gameLoop () {
 function update () {
     clock.update();
     updateVectors(clock.deltaTime);
-    canvas.clear();
+    //canvas.clear();
     drawPoints(draw);
     requestAnimationFrame(update);
 }
