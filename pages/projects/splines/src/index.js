@@ -29,7 +29,7 @@ function update () {
     clock.update();
     updateVectors(clock.deltaTime);
     canvas.clear();
-    drawVectors(draw);
+    drawPoints(draw);
     requestAnimationFrame(update);
 }
 
