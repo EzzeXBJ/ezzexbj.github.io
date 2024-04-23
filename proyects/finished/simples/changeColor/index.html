@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Change Color</title>
+  <style>
+    * {
+      padding: 0:
+      margin: 0;
+      font-size: 120%;
+    }
+    body {
+      height: 100vh;
+      background: rgb(255,0,0);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+    }
+    button {
+      width: 50%;
+      background: none;
+      border: 2px solid #000;
+      border-radius: 5px;
+      margin: 10px;
+    }
+    #text {
+      color: #fff;
+      background: #000;
+      font-weight: bold;
+      padding: 5px;
+      border-radius: 5px;
+    }
+    #color {
+      color: #07f;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <span id="text">Background Color : <span id="color">Red</span></span>
+    <button onclick="change()">Click Me</button>
+    <script>
+      const background = document.body;
+      const colorText = document.getElementById("color");
+      const colors = [["Red", "#f00", "#00f"], ["Green", "#0f0", "#f00"], ["Blue", "#00f", "#0f0"]];
+      let increment = 0;
+      
+      const change = () => {
+        background.style.background = colors[increment][1];
+        colorText.style.color = colors[increment][2];
+        colorText.innerText = colors[increment][0];
+        increment = increment < 2 ? increment + 1 : 0;
+      }
+    </script>
+  </div>
+</body>
+</html>
