@@ -377,7 +377,7 @@ class TextInput extends Element {
                 draw.text(this.value[runCursor],this.style.font.width*this.drawCursor.x,this.style.font.width*this.drawCursor.y,this.style.font);
             }
         }
-        draw.rect(this.inputCursor.x * this.style.font.size,this.inputCursor.y * this.style.font.width,this.style.font.size/4,this.style.font.width,this.style.cursorColor);
+        draw.rect(this.inputCursor.x * this.style.font.size + this.position.x,this.inputCursor.y * this.style.font.width + this.position.y,this.style.font.size/4,this.style.font.width,this.style.cursorColor);
         //console.log(this.drawCursor,this.inputCursor)
     }
     onMouseClick () {
@@ -484,4 +484,5 @@ const textEditor = new TextInput("textEditor",{
         fontFamily: "monospace"
     })
 })
+textEditor.value = "Hola pablo";
 setInterval(display.update.bind(display),1);
