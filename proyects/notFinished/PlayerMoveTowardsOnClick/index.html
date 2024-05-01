@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Player Move Towards On Click</title>
+</head>
+<body>
+  <script>
+    alert("Puedes desactivar el dibujado de la trayectoria escribiendo 'player.hiddenTrayect = true', y si lo quieres volver a activar solo dale el valor 'false' :P");
+    function lerp (start,target,alpha) {
+  return start + (target-start)*alpha;
+}
+
+class Display {
+  static canvas = document.createElement("canvas");
+  static context = Display.canvas.getContext("2d");
+  static get width() {
+    return Display.canvas.width
+  }
+  static get height() {
+    return Display.canvas.height;
+  }
+  static init() {
+    document.body.appendChild(Display.canvas);
+    Display.canvas.style.background = "#111";
+    Display.canvas.style.position = "absolute";
+    Display.canvas.style.top = 0;
+    Display.canvas.style.left = 0;
+  }
+  static setSize(width = 300, height = 250) {
+    Display.canvas.width = (width == null) ? Display.width : width;
+    Display.canvas.height = (height == null) ? Display.height : height;
+    Display.context.imageSmoothingEnabled = false;
+
+    return Display;
+  }
+  static setFullsize() {
+    return Display.setSize(innerWidth, innerHeight);
+  }
+  static clear() {
+    Display.context.clearRect(0, 0, Display.width, Display.height);
+  }
+}
+class Clock {
+  constructor() {
+    this.reset();
+    this.pause = true;
+  }
+
+  start() {
+    this.curTime = this.startTime = performance.now();
+    this.pause = false;
+  }
+  reset () {
+    this.startTime = null;
+    this.time = null;
+    this.lastTime = null;
+    this.curTime = null;
+    this.difference = null;
+  }
+  update() {
+    if (!this.pause) {
+      this.lastTime = this.curTime;
+      this.curTime = performance.now();
+      this.difference = this.curTime - this.lastTime;
+      this.time += this.difference;
+    }
+  }
+}
+class Time {
+  static frame = null;
+  static fps = null;
+  static delta = null;
+  static clock = new Clock();
+
+  static start() {
+    Time.frame = -1;
+    Time.fps = 60;
+    Time.delta = 1 / 60;
+    Time.clock.start();
+  }
+  static update() {
+    Time.frame++;
+    Time.clock.update();
+    Time.fps = 1000 / Time.clock.difference;
+    Time.delta = Time.clock.difference / 1000;
+  }
+}
+class Vector2 {
+  static MoveTowards (start,target,alpha) {
+    const x = lerp(start.x,target.x,alpha);
+    const y = lerp(start.y,target.y,alpha);
+    return new Vector2(x,y);
+  }
+  static add (v1,v2) {
+    return new Vector2(v1.x+v2.x,v1.y+v2.y);
+  }
+  static sub (v1,v2) {
+    return new Vector2(v1.x-v2.x,v1.y-v2.y);
+  }
+  static mulScalar (v,scalar) {
+    return new Vector2(v.x*scalar,v.y*scalar);
+  }
+  static divScalar (v,scalar) {
+    return new Vector2(v.x/scalar,v.y/scalar);
+  }
+  static normalize (v,scalar) {
+    return Vector2.mulScalar(Vector2.divScalar(v,v.magnitude),scalar);
+  }
+  static rotate (v,radian) {
+    const angle = v.argument + radian;
+    return new Vector2(v.magnitude*Math.cos(angle),v.magnitude*Math.sin(angle))
+  }
+  static distanceBetween(v1,v2) {
+    return Math.sqrt((v1.y-v2.y)**2+(v2.x-v1.x)**2);
+  }
+  static vectorDistanceMid (v1,v2) {
+    return Vector2.MoveTowards(v1,v2,.5);
+  }
+  static vectorPerpendicularToVectorDistanceMid (v1,v2,alpha) {
+    const norm = 50;
+    return Vector2.sub(v1,v2).rotate(Math.PI/2).normalize(norm).add(Vector2.MoveTowards(v1,v2,alpha));
+  }
+  constructor (x,y) {
+    this.x = x;
+    this.y = y;
+  }
+  get magnitude () {
+    return Math.sqrt(this.x*this.x + this.y*this.y);
+  }
+  get argument () {
+    return Math.atan2(this.y,this.x);
+  }
+  add (v) {
+    return this.copy(Vector2.add(this,v));
+  }
+  rotate (radian) {
+    return this.copy(Vector2.rotate(this,radian));
+  }
+  normalize(scalar=1) {
+    return this.copy(Vector2.normalize(this,scalar));
+  }
+  copy (v) {
+    this.x = v.x;
+    this.y = v.y;
+    return this;
+  }
+}
+class Player {
+  constructor () {
+    this.position = new Vector2(Display.width/2,Display.height/2);
+    this.size = new Vector2(50,50);
+    this.color = "#55d";
+    this.points = [];
+    this.hiddenTrayect = false;
+    this.speed = 5;
+    this.clock = new Clock();
+    this.startPosition = this.position;
+    this.targetPosition = [];
+  }
+  start () {
+    Display.canvas.addEventListener("touchstart",this.onTouchStart.bind(this));
+  }
+  update () {
+    this.clock.update();
+    if (this.targetPosition.length!=0) {
+      const duration = Vector2.distanceBetween(this.startPosition,this.targetPosition[0])*(10/this.speed);
+      if (this.clock.time<=duration) {
+        this.position = Vector2.MoveTowards(this.startPosition,this.targetPosition[0],this.clock.time/duration);
+      } else {
+        this.position = this.targetPosition[0];
+        this.startPosition = this.position;
+        this.targetPosition.shift();
+        this.clock.reset();
+        this.clock.start();
+      }
+    } else {
+      this.clock.pause = true;
+      this.clock.reset();
+    }
+  }
+  draw () {
+    const ctx = Display.context;
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.position.x,this.position.y,this.size.x,this.size.y);
+    if (!this.hiddenTrayect) {
+      this.targetPosition.forEach((point,index) => {
+        let backPoint = this.targetPosition[index - 1];
+        if (backPoint===undefined) backPoint = this.position;
+        
+        ctx.beginPath();
+        
+        ctx.fillStyle = "#d11";
+        ctx.arc(point.x, point.y, 10, 0, Math.PI*2);
+        ctx.fill();
+        ctx.closePath();
+        
+        ctx.beginPath();
+        ctx.strokeStyle = "#ddd";
+        ctx.lineWidth = 2;
+        ctx.moveTo(backPoint.x, backPoint.y);
+        const v1 = Vector2.vectorPerpendicularToVectorDistanceMid(backPoint,point,.25);
+        const v2 = Vector2.vectorPerpendicularToVectorDistanceMid(backPoint,point,.75);
+        ctx.bezierCurveTo(v1.x,v1.y,v2.x,v2.y,point.x,point.y);
+        ctx.moveTo(backPoint.x, backPoint.y);
+        ctx.lineTo(point.x, point.y);
+        ctx.stroke();
+        ctx.closePath();
+      })
+    }
+  }
+  onTouchStart (event) {
+    const touch = event.changedTouches[0];
+    const x = touch.pageX;
+    const y = touch.pageY;
+    if (this.clock.pause) this.clock.start();
+    this.targetPosition.push(new Vector2(x,y));
+  }
+}
+Display.setFullsize().init();
+const player = new Player();
+Time.start();
+player.start();
+tick();
+function tick () {
+  Time.update();
+  player.update();
+  Display.clear();
+  player.draw();
+  requestAnimationFrame(tick);
+}
+  </script>
+</body>
+</html>
