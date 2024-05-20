@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Math</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>Cuanto vale un Vector elevado a un Escalar? GA2D</h1>
+  <p>Primero se recomienda saber que son los Vectores (2D) y Escalares, en caso de no saberlo te recomiendo redirigirte a <a href="#VECTOR2D">Vectores (2D)</a> y <a href="#SCALAR">Escalares</a>donde yo te explico lo que son.</p>
+  <p>Ahora ya sabiendo lo que es un Vector y un escalar, nos preguntamos, Cuanto vale un vector elevado a un escalar?
+  <br>Para averiguarlo empezaremos con el caso mas basico, su cuadrado: \({\vec {v}}^2\).</p>
+  <p>
+    Recordemos:
+    $$\begin{array}{l}
+    {\hat {x}}^2 = 1 \\
+    {\hat {y}}^2 = 1 \\
+    ({\hat {x}}{\hat {y}})^2 = -1 \\
+    {\hat {x}}{\hat {y}} = -{\hat {y}}{\hat {x}} \\
+    \end{array}$$
+    Desarrollamos:
+    $$\begin{array}{ll}
+    {\vec {v}}^2&={\vec {v}}{\vec {v}} \\
+    &=(v_x{\hat {x}}+v_y{\hat {y}})(v_x{\hat {x}}+v_y{\hat {y}}) \\
+    &=v_x{\hat {x}}(v_x{\hat {x}}+v_y{\hat {y}})+v_y{\hat {y}}(v_x{\hat {x}}+v_y{\hat {y}}) \\
+    &=v_x^2{\hat {x}}^2+v_xv_y{\hat {x}}{\hat {y}}+v_yv_x{\hat {y}}{\hat {x}}+v_y^2y^2 \\
+    &=v_x^2+v_xv_y{\hat {x}}{\hat {y}}-v_yv_x{\hat {x}}{\hat {y}}+v_y^2 \\
+    &=v_x^2+v_y^2 \\
+    \end{array}$$
+    Al final obtenemos que el cuadrado de un vector es la suma de los cuadrados de sus componentes, a que les suena?
+    Recordemos cuanto vale la magnitud de un vector:
+    $$|{\vec {v}}| = \sqrt{v_x^2+v_y^2}$$
+    El radicando es igual al cuadrado del vector, por lo q podemos reemplazar y entonces:
+    $$ \begin{array}{l}
+    |{\vec {v}}| = \sqrt{{\vec {v}}^2} \\
+    |{\vec {v}}|^2 = {\vec {v}}^2 \\
+    \end{array}
+    $$
+  </p>
+  <p>
+    Acabamos de hallar que un vector multiplicado por si mismo, nos da su longitud al cuadrado. Ahora podemos obtener \({\vec {v}}^3\):
+    $$ \begin{array}{ll}
+    {\vec {v}}^3 &= {\vec {v}}{\vec {v}}{\vec {v}} \\
+    &= {\vec {v}}^2{\vec {v}} \\
+    &= |{\vec {v}}|^2{\vec {v}} \\
+    \end{array}$$
+    Asi podemos generalizar para n Natural:
+    $$ {\vec {v}}^n = {\vec {v}}^{(n-1)}{\vec {v}}$$
+  </p>
+  <p>
+    Pero que hay de los exponentes negativos?
+    Probemos:
+    $$\begin{array}{ll}
+    {\vec {v}}^{-1} &= {1 \over {\vec {v}}} \\
+    &= {1 \over {\vec {v}}}{{\vec {v}} \over {\vec {v}}} \\
+    &= {{\vec {v}} \over {\vec {v}}^2} \\
+    &= {{\vec {v}} \over |{\vec {v}}|^2}
+    \end{array}$$
+    Y encontramos:
+    $${\vec {v}}^{-1} = {{\vec {v}} \over |{\vec {v}}|^2}$$
+  </p>
+  <!--p>
+    Para \(GA\)-\(2D\) tenemos un Multivector \(M\) tal que: 
+    $$ M = a+bx+cy+dxy$$
+    donde \(x\) e \(y\) son vectores base ortogonales.
+    <br>
+    Entonces definamos los vectores \(v\) y \(u\) tal que:
+    $$v = v_xx + v_yy$$
+    $$u = u_xx + u_yy$$
+    <br>
+    Nosotros queremos saber cual es el valor de \(v^u\), para ello debemos reemplazar.
+    $$ v^u = (v_xx+v_yy)^{u_xx+u_yy}$$
+    y como $$a^{n+m}=a^na^m$$
+    entonces:
+    $$ (v_xx+v_yy)^{u_xx+u_yy} = (v_xx+v_yy)^{u_xx} (v_xx+v_yy)^{u_yy} $$
+    ahora notamos que tenemos el vector \(v\) elevado al producto de (\(u_x\)) y \(x\), o tambien, un vector elevado a el vector base \(x\). como no sabemos cuanto vale, tendremos q calcularlo.
+    
+    $$ \displaystyle {\begin{array}{ll}a^{1}=&a\\a^{2}=&a\times a\\\vdots &\vdots \\a^{n}=&\underbrace {a\times \cdots \times a} _{n{\text{ veces}}},\end{array}}$$
+  </p-->
+</body>
+  </html>
