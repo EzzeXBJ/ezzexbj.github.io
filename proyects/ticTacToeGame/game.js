@@ -53,7 +53,7 @@ class Tab {
   }
 }
 
-const comWin = [
+const winCombinations = [
   [0,1,2],
   [3,4,5],
   [6,7,8],
@@ -68,6 +68,7 @@ const tab = new Tab(3,3);
 
 const restartBtn = document.getElementById("restartBtn");
 const statusText = document.getElementById("status");
+const playerText = document.getElementById("player");
 
 const canvas = document.getElementById("mainCanvas");
 canvas.width = tab.width*scale;
@@ -82,6 +83,7 @@ const Restart = function () {
   player = RandomBit();
   let _a = player ? "X" : "O";
   console.log("set player",_a,player);
+  playerText.textContent = player ? "Rojo" : "Azul";
   
   tab.Draw(ctx,scale);
   
@@ -124,8 +126,8 @@ const TurnCPU = function () {
 };
 const Analize = function () {
   //anailza si alguno gano, si es asi, status = "win" y muestra en consola quien gano;
-  for (let i = 0; i<comWin.length;i++) {
-    const v = comWin[i];
+  for (let i = 0; i<winCombinations.length;i++) {
+    const v = winCombinations[i];
     const a = tab.map[v[0]];
     const b = tab.map[v[1]];
     const c = tab.map[v[2]];
