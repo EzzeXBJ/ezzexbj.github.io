@@ -1,0 +1,13 @@
+#mainCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+button {
+  height: 30px;
+}
