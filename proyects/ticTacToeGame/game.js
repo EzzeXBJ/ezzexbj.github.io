@@ -63,6 +63,8 @@ const winCombinations = [
   [0,4,8],
   [2,4,6]
 ];
+const memoi = [[],[]];
+const isMemoi = true;
 const scale = 100;
 const tab = new Tab(3,3);
 
@@ -80,6 +82,10 @@ let status = null;
 const Restart = function () {
   statusText.textContent = "null";
   tab.Reset();
+  
+  memoi[0] = [];
+  memoi[1] = [];
+  
   player = RandomBit();
   let _a = player ? "X" : "O";
   console.log("set player",_a,player);
@@ -112,7 +118,17 @@ const TurnCPU = function () {
     }
   } while (tab.get(x,y)!==null);
   
-  tab.set(player?0:1,x,y);
+  let _l = player?0:1;
+  tab.set(_l,x,y);
+  
+  if (isMemoi) {
+    memoi[_l].push([x, y]);
+    if (memoi[_l].length > 3) {
+      tab.set(null, memoi[_l][0][0], memoi[_l][0][1]);
+      memoi[_l].shift();
+    }
+  }
+  
   console.log("cpu in",x,y);
   
   tab.Draw(ctx,scale);
@@ -165,12 +181,21 @@ canvas.addEventListener("touchstart", event => {
   if (status=="player"&&tab.get(x,y)===null) {
     tab.set(player,x,y);
     
+    if (isMemoi) {
+      memoi[player].push([x, y]);
+      console.log(memoi[player])
+      if (memoi[player].length > 3) {
+        tab.set(null, memoi[player][0][0], memoi[player][0][1]);
+        memoi[player].shift();
+      }
+    }
+    
     tab.Draw(ctx,scale);
     Analize();
     
     if (status!="win") {
       status = "cpu";
-      requestAnimationFrame(TurnCPU);
+      setTimeout(TurnCPU,500);
     } else console.log("game finished");
   } else if (tab.get(x,y)!==null) console.log("touch busy");
   else if (status=="cpu") console.log("turn cpu");
