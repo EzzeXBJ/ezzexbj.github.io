@@ -45,10 +45,33 @@ class Tab {
       const x = col * scale;
       const y = row * scale;
       
-      ctx.fillStyle = (this.map[index] == null) ? "#111" : this.map[index] ? "#d55" : "#55d";
-      ctx.fillRect(x, y, scale, scale);
-      ctx.strokeStyle = "#fff";
-      ctx.strokeRect(x, y, scale, scale);
+      let _c = "#fff";
+      switch (this.map[index]) {
+        case null: _c = "#111"; break;
+        case 0: _c = "#f55"; break;
+        case 1: _c = "#55f"; break;
+        case -1: _c = "#a55"; break;
+        case -2: _c = "#55a"; break;
+        default: _c = "#fff"; break;
+      } 
+      
+      ctx.strokeStyle = _c;
+      ctx.lineWidth = 6;
+      ctx.fillStyle = "#111";
+      ctx.fillRect(x,y,scale,scale);
+      ctx.beginPath();
+      if (this.map[index]===1||this.map[index]===-2) {
+        ctx.moveTo(x+scale*.2,y+scale*.2);
+        ctx.lineTo(x+scale*.8,y+scale*.8);
+        ctx.moveTo(x+scale*.8,y+scale*.2);
+        ctx.lineTo(x+scale*.2,y+scale*.8);
+      } else if (this.map[index]===0||this.map[index]===-1) {
+        ctx.arc(x+scale/2,y+scale/2,scale*.3,0,Math.PI*2);
+      }
+      ctx.closePath();
+      ctx.stroke();
+      ctx.strokeStyle = "#ddd";
+      ctx.strokeRect(x,y,scale,scale);
     })
   }
 }
@@ -68,16 +91,16 @@ const isMemoi = true;
 const scale = 100;
 const tab = new Tab(3,3);
 
-const restartBtn = document.getElementById("restartBtn");
-const statusText = document.getElementById("status");
-const playerText = document.getElementById("player");
-
 const canvas = document.getElementById("mainCanvas");
 canvas.width = tab.width*scale;
 canvas.height = tab.height*scale;
 const ctx = canvas.getContext("2d");
 let player = null;
 let status = null;
+
+const restartBtn = document.getElementById("restartBtn");
+const statusText = document.getElementById("status");
+const playerText = document.getElementById("player");
 
 const Restart = function () {
   statusText.textContent = "null";
@@ -127,8 +150,9 @@ const TurnCPU = function () {
       tab.set(null, memoi[_l][0][0], memoi[_l][0][1]);
       memoi[_l].shift();
     }
+    if (memoi[_l].length > 2) tab.set(-1,memoi[_l][0][0],memoi[_l][0][1]);
   }
-  
+  console.log("memoi",tab.get(memoi[_l][0][0],memoi[_l][0][1]))
   console.log("cpu in",x,y);
   
   tab.Draw(ctx,scale);
@@ -142,6 +166,7 @@ const TurnCPU = function () {
 };
 const Analize = function () {
   //anailza si alguno gano, si es asi, status = "win" y muestra en consola quien gano;
+  /*
   for (let i = 0; i<winCombinations.length;i++) {
     const v = winCombinations[i];
     const a = tab.map[v[0]];
@@ -165,15 +190,14 @@ const Analize = function () {
       console.log("game tied");
       statusText.textContent = "Empate";
     }
-  }
+  }*/
 }
-
 Restart();
 
 canvas.addEventListener("touchstart", event => {
   const touch = event.touches[0];
-  const x = Math.floor(touch.clientX / scale);
-  const y = Math.floor(touch.clientY / scale);
+  const x = Math.floor((touch.clientX-canvas.offsetLeft) / scale);
+  const y = Math.floor((touch.clientY-canvas.offsetTop) / scale);
   
   console.log("touch",x,y);
   console.log("tab",tab.map);
@@ -188,6 +212,7 @@ canvas.addEventListener("touchstart", event => {
         tab.set(null, memoi[player][0][0], memoi[player][0][1]);
         memoi[player].shift();
       }
+      if (memoi[player].length == 3) tab.set(-2,memoi[player][0][0],memoi[player][0][1]);
     }
     
     tab.Draw(ctx,scale);
